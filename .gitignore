@@ -40,6 +40,42 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# ide
+# IDE
 .idea
-.vscode
+# .vscode (프로젝트 설정은 공유하되 개인 설정은 제외)
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+
+# 임시 파일들
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# 로그 파일들
+*.log
+
+# 캐시 파일들
+.eslintcache
+.turbo
+
+# 의존성 관련
+.pnp.*
+.yarn/install-state.gz
+
+# 테스트 관련
+.nyc_output
+coverage/
+junit.xml
+
+# 배포 관련
+.firebase/
+.serverless/
+
+# 개발 도구
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
