@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  app-dev:
+    build:
+      context: .
+      target: base
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+    profiles: [ "dev" ]
+#  app-prod:
+#    build:
+#      context: .
+#      target: runner
+#    ports:
+#      - "3000:3000"
+#    environment:
+#      - NODE_ENV=production
+#    profiles: ["prod"]
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: dalian
+      POSTGRES_USER: dalian
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+volumes:
+  postgres_data:
