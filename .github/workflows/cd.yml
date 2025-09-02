@@ -1,0 +1,217 @@
+name: Manual Deploy
+
+on:
+  # 수동 트리거로만 배포 실행
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "배포 환경 선택"
+        required: true
+        default: "production"
+        type: choice
+        options:
+          - production
+          - staging
+      deploy_notes:
+        description: "배포 노트 (선택사항)"
+        required: false
+        type: string
+
+jobs:
+  # 🔍 CI: 배포 전 검사 (PR + Push 모두 실행)
+  ci:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: |
+          echo "📦 Installing dependencies..."
+          if ! npm ci; then
+            echo ""
+            echo "❌ Dependency installation failed!"
+            echo ""
+            echo "🔍 Possible issues:"
+            echo "   - package-lock.json out of sync"
+            echo "   - Node.js version mismatch"
+            echo "   - Network connectivity issues"
+            echo ""
+            echo "💡 Try locally:"
+            echo "   rm -rf node_modules package-lock.json"
+            echo "   npm install"
+            exit 1
+          else
+            echo "✅ Dependencies installed successfully!"
+          fi
+
+      - name: Run ESLint
+        run: |
+          echo "🔍 Running ESLint code quality checks..."
+          if ! npm run lint; then
+            echo ""
+            echo "❌ ESLint found code quality issues!"
+            echo ""
+            echo "🔧 To fix auto-fixable issues, run:"
+            echo "   npm run lint:fix"
+            echo ""
+            echo "📚 ESLint rules documentation:"
+            echo "   https://nextjs.org/docs/app/api-reference/config/eslint"
+            exit 1
+          else
+            echo "✅ No ESLint issues found!"
+          fi
+
+      - name: Check TypeScript
+        run: |
+          echo "🔧 Running TypeScript type checking..."
+          if ! npm run type-check; then
+            echo ""
+            echo "❌ TypeScript type errors found!"
+            echo ""
+            echo "💡 Common fixes:"
+            echo "   - Check for missing type imports"
+            echo "   - Verify interface definitions"
+            echo "   - Add type annotations for parameters"
+            echo ""
+            echo "📚 TypeScript handbook:"
+            echo "   https://www.typescriptlang.org/docs/"
+            exit 1
+          else
+            echo "✅ No TypeScript errors found!"
+          fi
+
+      - name: Check Prettier formatting
+        run: |
+          echo "🎨 Checking code formatting with Prettier..."
+          if ! npm run format:check; then
+            echo ""
+            echo "❌ Prettier formatting issues found!"
+            echo ""
+            echo "📝 Files with formatting issues:"
+            npx prettier --check . --list-different || true
+            echo ""
+            echo "🔍 Detailed differences:"
+            for file in $(npx prettier --check . --list-different 2>/dev/null || true); do
+              echo "--- $file ---"
+              npx prettier --check "$file" 2>&1 || true
+              echo ""
+            done
+            echo ""
+            echo "🔧 To fix these issues locally, run:"
+            echo "   npm run format"
+            echo ""
+            echo "📋 Or fix specific files:"
+            echo "   npx prettier --write <filename>"
+            exit 1
+          else
+            echo "✅ All files are properly formatted!"
+          fi
+
+      - name: Build verification
+        run: |
+          echo "🏗️ Building application for production..."
+          if ! npm run build; then
+            echo ""
+            echo "❌ Build failed!"
+            echo ""
+            echo "🔍 Common build issues:"
+            echo "   - TypeScript errors in production build"
+            echo "   - Missing environment variables"
+            echo "   - Import/export syntax errors"
+            echo "   - Tailwind CSS configuration issues"
+            echo ""
+            echo "💡 Try building locally first:"
+            echo "   npm run build"
+            exit 1
+          else
+            echo "✅ Build completed successfully!"
+            echo "📦 Production build is ready for deployment"
+          fi
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Bundle size analysis
+        run: |
+          echo "📊 Analyzing bundle size..."
+          echo ""
+
+          # .next 폴더 크기 확인
+          if [ -d ".next" ]; then
+            echo "📦 Build output analysis:"
+            echo "   Total build size: $(du -sh .next | cut -f1)"
+            echo "   Static files: $(du -sh .next/static 2>/dev/null | cut -f1 || echo 'N/A')"
+            echo "   Server files: $(du -sh .next/server 2>/dev/null | cut -f1 || echo 'N/A')"
+            echo ""
+            
+            # JavaScript 번들 크기 분석
+            echo "🎯 JavaScript bundles:"
+            find .next -name "*.js" -type f -exec ls -lh {} \; | awk '{print "   " $9 ": " $5}' | head -10
+            echo ""
+            
+            # CSS 파일 크기
+            echo "🎨 CSS files:"
+            find .next -name "*.css" -type f -exec ls -lh {} \; | awk '{print "   " $9 ": " $5}' | head -5
+            echo ""
+            
+            # 큰 파일들 경고
+            echo "⚠️  Large files (>500KB):"
+            find .next -type f -size +500k -exec ls -lh {} \; | awk '{print "   ⚠️  " $9 ": " $5}' || echo "   ✅ No large files found"
+            echo ""
+            
+            echo "💡 Bundle optimization tips:"
+            echo "   - Use dynamic imports for large components"
+            echo "   - Optimize images with next/image"
+            echo "   - Remove unused dependencies"
+            echo "   - Consider code splitting"
+          else
+            echo "❌ Build output not found!"
+          fi
+
+  # 🚀 CD: 배포 (수동 트리거시에만 실행)
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    needs: ci
+    # workflow_dispatch에서만 실행
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Vercel
+        run: |
+          echo "🚀 Deploying to Vercel (${{ github.event.inputs.environment }})..."
+          echo "📋 Deployment details:"
+          echo "   - Environment: ${{ github.event.inputs.environment }}"
+          echo "   - Triggered by: ${{ github.actor }}"
+          echo "   - Deploy notes: ${{ github.event.inputs.deploy_notes || 'No notes provided' }}"
+          echo "   - Build: Next.js optimized build"
+          echo ""
+
+      - name: Execute Vercel deployment
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_ID }}
+          vercel-args: ${{ github.event.inputs.environment == 'production' && '--prod' || '--staging' }}
+
+      - name: Deployment complete
+        run: |
+          echo "✅ Deployment to ${{ github.event.inputs.environment }} completed successfully!"
+          echo "🌐 Your application is now live!"
+          echo "📊 Check deployment status at: https://vercel.com/dashboard"
+          echo ""
+          echo "📝 Deploy notes: ${{ github.event.inputs.deploy_notes || 'No notes provided' }}"
+          echo "👤 Deployed by: ${{ github.actor }}"
+          echo "⏰ Deployed at: $(date)"
