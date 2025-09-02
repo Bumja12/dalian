@@ -198,13 +198,25 @@ jobs:
           echo "   - Build: Next.js optimized build"
           echo ""
 
+      - name: Debug - Check secrets availability
+        run: |
+          echo "🔍 Checking Vercel secrets..."
+          echo "VERCEL_TOKEN exists: ${{ secrets.VERCEL_TOKEN != '' && 'YES' || 'NO' }}"
+          echo "ORG_ID exists: ${{ secrets.ORG_ID != '' && 'YES' || 'NO' }}"
+          echo "PROJECT_ID exists: ${{ secrets.PROJECT_ID != '' && 'YES' || 'NO' }}"
+          echo "Environment: ${{ github.event.inputs.environment }}"
+
       - name: Execute Vercel deployment
+        id: vercel
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_ID }}
           vercel-args: ${{ github.event.inputs.environment == 'production' && '--prod' || '--staging' }}
+          working-directory: ./
+          # GitHub 코멘트 기능 비활성화 (권한 문제 해결)
+          github-comment: false
 
       - name: Deployment complete
         run: |
@@ -215,3 +227,20 @@ jobs:
           echo "📝 Deploy notes: ${{ github.event.inputs.deploy_notes || 'No notes provided' }}"
           echo "👤 Deployed by: ${{ github.actor }}"
           echo "⏰ Deployed at: $(date)"
+          echo ""
+          # Vercel에서 생성된 URL 표시 (액션 output에서 가져옴)
+          if [ "${{ steps.vercel.outputs.preview-url }}" ]; then
+            echo "🔗 Preview URL: ${{ steps.vercel.outputs.preview-url }}"
+          fi
+          echo "🔗 Check Vercel dashboard for production URL"
+
+      - name: Notify deployment result
+        if: always() # 성공/실패 모두 실행
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "🎉 Deployment successful!"
+          else
+            echo "❌ Deployment failed!"
+            echo "🔍 Check the logs above for error details"
+            exit 1
+          fi

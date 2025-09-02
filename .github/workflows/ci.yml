@@ -66,11 +66,8 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: 1
 
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          vercel-org-id: ${{ secrets.ORG_ID }}
-          vercel-project-id: ${{ secrets.PROJECT_ID }}
-          vercel-args: "--prod"
+      # 배포는 수동으로 실행 (cd.yml 워크플로우에서)
+      - name: Build Complete
+        run: |
+          echo "✅ 빌드 성공! 배포 준비 완료"
+          echo "🚀 배포하려면: GitHub Actions → Deploy 실행"
