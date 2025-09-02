@@ -1,4 +1,4 @@
-name: Manual Deploy
+name: Deploy
 
 on:
   # 수동 트리거로만 배포 실행
