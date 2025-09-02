@@ -1,0 +1,13 @@
+{
+  "github": {
+    "enabled": true,
+    "autoAlias": false,
+    "autoJobCancelation": true,
+    "checks": {
+      "ignoreFailures": false
+    }
+  },
+  "buildCommand": "npm run build",
+  "installCommand": "npm ci",
+  "framework": "nextjs"
+}

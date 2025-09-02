@@ -1,36 +1,176 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dalian
 
-## Getting Started
+Modern web application built with Next.js 15, React 19, and TypeScript.
 
-First, run the development server:
+## 🚀 Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Framework**: Next.js 15 (App Router)
+- **Runtime**: React 19
+- **Language**: TypeScript 5
+- **Styling**: Tailwind CSS 4
+- **Code Quality**: ESLint 9 + Prettier
+- **Git Hooks**: Husky + lint-staged
+- **Validation**: Zod
+- **Utilities**: clsx, tailwind-merge
+- **CI/CD**: GitHub Actions
+- **Deployment**: Vercel
+
+## 📁 Project Structure
+
+```
+src/
+├── app/          # Next.js App Router (pages & layouts)
+├── components/   # Reusable UI components
+│   └── ui/       # Basic UI components
+├── lib/          # Core configurations & integrations
+│   └── env.ts    # Environment variable validation
+├── utils/        # Utility functions
+│   ├── ui.ts     # UI-related utilities (cn function)
+│   └── common.ts # General utilities (debounce, etc.)
+├── hooks/        # Custom React hooks
+├── types/        # TypeScript type definitions
+└── styles/       # Global styles
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js 18+
+- npm/yarn/pnpm
 
-## Learn More
+### Installation
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Clone repository
+git clone <repository-url>
+cd dalian
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Install dependencies
+npm install
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Setup environment variables (optional)
+cp .env.example .env.local
+```
 
-## Deploy on Vercel
+### Available Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+# Development
+npm run dev              # Start development server (with Turbo)
+npm run dev:debug        # Start with debug mode
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Build & Production
+npm run build           # Build for production
+npm run start           # Start production server
+npm run clean           # Clean build artifacts
+
+# Code Quality
+npm run lint            # Run ESLint
+npm run lint:fix        # Fix ESLint issues
+npm run format          # Format with Prettier
+npm run format:check    # Check Prettier formatting
+npm run type-check      # TypeScript type checking
+npm run check-all       # Run all quality checks
+
+# Testing
+npm run test            # Run tests (placeholder)
+```
+
+## 🔧 Configuration
+
+### Path Aliases
+
+Configured absolute imports for cleaner code:
+
+```typescript
+// Available path aliases
+import Button from "@/components/ui/Button";
+import { cn } from "@/utils/ui";
+import { debounce } from "@/utils/common";
+import { env } from "@/lib/env";
+import type { User } from "@/types";
+```
+
+### Environment Variables
+
+Environment variables are validated using Zod for type safety:
+
+```bash
+# .env.local (create from .env.example)
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_NAME=Dalian
+
+# Add more variables as needed:
+# DATABASE_URL=postgresql://...
+# API_SECRET_KEY=your-secret-key
+```
+
+**Environment validation** automatically runs on app start and provides helpful error messages for missing or invalid variables.
+
+## 📝 Development Guidelines
+
+### Code Quality
+
+- **TypeScript**: Strict mode enabled for all files
+- **ESLint**: Configured with Next.js, React, and accessibility rules
+- **Prettier**: Auto-formatting with Tailwind class sorting
+- **Path imports**: Use `@/` prefix for absolute imports
+- **Naming**: Use descriptive names and consistent patterns
+
+### Git Workflow
+
+- **Pre-commit hooks**: Automatically run ESLint and Prettier on staged files
+- **Commit messages**: Write clear, descriptive commit messages
+- **Branch strategy**: Feature branches → Pull requests → Main branch
+
+### Utility Functions
+
+- **`cn()`**: Tailwind class merging utility
+- **`debounce()`**: Function debouncing for performance
+- **Environment validation**: Type-safe environment variable access
+
+## 🚀 CI/CD & Deployment
+
+### GitHub Actions
+
+Automated pipeline on every push/PR:
+
+1. **Lint & Type Check**: ESLint + TypeScript validation
+2. **Build**: Production build verification
+3. **Deploy**: Automatic deployment to Vercel (main branch only)
+
+### Vercel Deployment
+
+- **Automatic deployment** on push to main branch
+- **Preview deployments** for pull requests
+- **Environment variables** managed in Vercel dashboard
+- **GitHub integration** waits for CI checks before deploying
+
+### Manual Build
+
+```bash
+npm run build    # Creates .next/ directory
+npm run start    # Serves production build locally
+```
+
+## 🔄 Code Quality Automation
+
+- **Pre-commit**: ESLint + Prettier run automatically before commits
+- **CI Pipeline**: Full quality checks on every push
+- **Type Safety**: Environment variables validated at build time
+- **Import Organization**: Auto-sorted imports with proper grouping
+
+## 📦 Key Dependencies
+
+- **clsx + tailwind-merge**: Dynamic className handling
+- **zod**: Runtime type validation for environment variables
+- **husky + lint-staged**: Git hooks for code quality
+- **prettier-plugin-tailwindcss**: Tailwind class sorting
+
+## 📚 Additional Resources
+
+- [Next.js 15 Documentation](https://nextjs.org/docs)
+- [Tailwind CSS v4](https://tailwindcss.com/docs)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs)
+- [Zod Documentation](https://zod.dev)
