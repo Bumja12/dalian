@@ -8,7 +8,7 @@ const envSchema = z.object({
     .default("development"),
 
   // Next.js 공개 환경변수
-  NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
+  NEXT_PUBLIC_APP_URL: z.url().default("http://localhost:3000"),
   NEXT_PUBLIC_APP_NAME: z.string().default("Dalian"),
 
   // 서버 전용 환경변수 (필요시 주석 해제)

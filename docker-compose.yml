@@ -13,16 +13,16 @@ services:
     environment:
       - NODE_ENV=development
     command: npm run dev
-    profiles: [ "dev" ]
-#  app-prod:
-#    build:
-#      context: .
-#      target: runner
-#    ports:
-#      - "3000:3000"
-#    environment:
-#      - NODE_ENV=production
-#    profiles: ["prod"]
+    profiles: ["dev"]
+  #  app-prod:
+  #    build:
+  #      context: .
+  #      target: runner
+  #    ports:
+  #      - "3000:3000"
+  #    environment:
+  #      - NODE_ENV=production
+  #    profiles: ["prod"]
   postgres:
     image: postgres:15-alpine
     environment:
