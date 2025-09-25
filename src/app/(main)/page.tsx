@@ -1,17 +1,20 @@
 import GoogleMapComponent from "@/components/GoogleMapComponent";
-import BottomActionBar from "@/components/home/BottomActionBar";
+import BottomDrawer from "@/components/home/BottomDrawer";
 import FloatingControls from "@/components/home/FloatingControls";
 import TopSearchBar from "@/components/home/TopSearchBar";
+import { getPlaces } from "@/lib/db/queries/places";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const places = await getPlaces();
+
   return (
     <div className="relative min-h-screen">
       <div className="absolute inset-0">
-        <GoogleMapComponent />
+        <GoogleMapComponent places={places} />
       </div>
       <TopSearchBar />
       <FloatingControls />
-      <BottomActionBar />
+      <BottomDrawer />
     </div>
   );
 }

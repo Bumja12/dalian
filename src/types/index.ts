@@ -4,3 +4,17 @@ export interface BaseResponse<T = any> {
   message?: string;
   error?: string;
 }
+
+export interface LatLng {
+  lat: number;
+  lng: number;
+}
+
+export enum PlaceCategory {
+  "식당",
+  "카페",
+  "호텔",
+  "여행지",
+  "쇼핑",
+  "기타",
+}

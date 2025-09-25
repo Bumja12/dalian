@@ -1,12 +1,18 @@
-import { MenuIcon, SearchIcon } from "../icons";
+"use client";
+
+import { MenuIcon, SearchIcon } from "@/components/icons";
+import { useMapStore } from "@/lib/stores/mapStore";
+import { cn } from "@/utils/ui";
 
 interface TopSearchBarProps {
   className?: string;
 }
 
 export default function TopSearchBar({ className = "" }: TopSearchBarProps) {
+  const { searchQuery, setSearchQuery } = useMapStore();
+
   return (
-    <header className={["relative z-10 p-6", className].join(" ")}>
+    <header className={cn(["relative", "z-10", "p-6", className])}>
       <div className="container rounded-3xl border border-gray-200 bg-white/85 p-2 shadow-lg backdrop-blur-sm transition-colors focus-within:border-blue-500 hover:border-gray-300">
         <div className="flex flex-row items-center justify-between gap-2">
           <div>
@@ -15,6 +21,8 @@ export default function TopSearchBar({ className = "" }: TopSearchBarProps) {
           <div className="w-full">
             <input
               type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
               aria-label="장소 검색"
               placeholder="장소를 검색하세요"
               className="w-full border-none bg-transparent text-center outline-none placeholder:text-gray-500"
