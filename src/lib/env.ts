@@ -50,6 +50,6 @@ function validateEnv(): Env {
 export const env = validateEnv();
 
 // 개발 환경에서만 검증 결과 로깅
-if (env.NODE_ENV === "development") {
-  console.log("✅ Environment variables validated successfully");
-}
+// if (env.NODE_ENV === "development") {
+//   console.log("✅ Environment variables validated successfully");
+// }
