@@ -1,3 +1,5 @@
+import { cn } from "@/utils/ui";
+
 interface IconButtonProps {
   className?: string;
   children: React.ReactNode;
@@ -21,12 +23,13 @@ export default function IconButton({
       type="button"
       aria-label={ariaLabel}
       onClick={onClick}
-      className={[
-        "pressable rounded-lg",
+      className={cn([
+        "pressable",
+        "rounded-lg",
         "bg-white/85 shadow-lg backdrop-blur-sm",
         sizeClasses,
         className,
-      ].join(" ")}
+      ])}
     >
       {children}
     </button>

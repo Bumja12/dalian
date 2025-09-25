@@ -1,4 +1,5 @@
 import { ListIcon } from "@/components/icons";
+import { cn } from "@/utils/ui";
 
 interface BottomActionBarProps {
   className?: string;
@@ -9,10 +10,16 @@ export default function BottomActionBar({
 }: BottomActionBarProps) {
   return (
     <footer
-      className={[
-        "fixed right-0 bottom-0 left-0 z-20 h-[10vh] p-6",
+      className={cn([
+        "fixed",
+        "right-0",
+        "bottom-0",
+        "left-0",
+        "h-[10vh]",
+        "p-6",
         className,
-      ].join(" ")}
+      ])}
+      style={{ bottom: "var(--bottom-sheet-spacer, 0)" }}
     >
       <div className="container flex h-full flex-row items-center justify-center">
         <button

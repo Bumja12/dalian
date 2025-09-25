@@ -12,7 +12,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_APP_NAME: z.string().default("Dalian"),
 
   // 서버 전용 환경변수 (필요시 주석 해제)
-  // DATABASE_URL: z.string().url(),
+  DATABASE_URL: z.url(),
   // API_SECRET_KEY: z.string().min(32),
   // GOOGLE_CLIENT_ID: z.string(),
   // GOOGLE_CLIENT_SECRET: z.string(),
@@ -50,6 +50,6 @@ function validateEnv(): Env {
 export const env = validateEnv();
 
 // 개발 환경에서만 검증 결과 로깅
-if (env.NODE_ENV === "development") {
-  console.log("✅ Environment variables validated successfully");
-}
+// if (env.NODE_ENV === "development") {
+//   console.log("✅ Environment variables validated successfully");
+// }
