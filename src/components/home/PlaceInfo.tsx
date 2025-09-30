@@ -6,7 +6,6 @@ interface PlaceInfoProps {
   name: string;
   address: string;
   rating: number;
-  representativeMenus: string[];
   tags: string[];
   category: string;
 }
@@ -28,12 +27,11 @@ export default function PlaceInfo({
   name,
   address,
   rating,
-  representativeMenus,
   tags = [],
   category,
 }: PlaceInfoProps) {
   return (
-    <div className="flex h-24 flex-col gap-3">
+    <div className="flex h-20 flex-col gap-1">
       <div>
         <div className="flex flex-row items-center justify-between px-6">
           <div className="flex flex-row items-center justify-start gap-1.5">
@@ -41,13 +39,6 @@ export default function PlaceInfo({
             <PlaceRating rating={rating} />
           </div>
           <CopyButton copyText={address} />
-        </div>
-        <div className="flex flex-row items-center justify-start gap-1.5 px-6">
-          {representativeMenus.map(menu => (
-            <div key={menu} className="text-xs font-bold text-gray-400">
-              {menu}
-            </div>
-          ))}
         </div>
       </div>
       <div className="flex flex-row items-center justify-start gap-1.5 px-6">

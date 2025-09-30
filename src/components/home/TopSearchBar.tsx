@@ -1,6 +1,6 @@
 "use client";
 
-import { MenuIcon, SearchIcon } from "@/components/icons";
+import { SearchIcon } from "@/components/icons";
 import { useMapStore } from "@/lib/stores/mapStore";
 import { cn } from "@/utils/ui";
 
@@ -28,8 +28,18 @@ export default function TopSearchBar({ className = "" }: TopSearchBarProps) {
               className="w-full border-none bg-transparent text-center outline-none placeholder:text-gray-500"
             />
           </div>
-          <button type="button" aria-label="메뉴 열기" className="pressable">
-            <MenuIcon className="h-5 w-5 text-gray-500" />
+          <button
+            type="button"
+            aria-label="exit"
+            className="pressable rounded-md bg-red-500 px-2 py-1 text-xs text-white transition-colors hover:bg-red-600"
+            onClick={() => {
+              // 쿠키 삭제
+              document.cookie = "dalian_auth=; path=/; max-age=0";
+              // 페이지 새로고침으로 로그인 페이지로 이동
+              window.location.href = "/login";
+            }}
+          >
+            EXIT
           </button>
         </div>
       </div>

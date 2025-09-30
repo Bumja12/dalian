@@ -52,15 +52,17 @@ export default function FloatingControls({
             aria-label="현 위치로 검색"
             className="pressable rounded-full bg-white/85 px-4 py-2 shadow-lg backdrop-blur-sm"
           >
-            <span className="text-sm text-gray-900">현 위치로 이동</span>
+            <span className="text-sm text-gray-900">현 위치로 검색</span>
           </button>
         </div>
         <div className="h-full">
-          <IconButton ariaLabel="필터">
+          <IconButton ariaLabel="필터링">
             <FilterIcon className="h-6 w-6 text-gray-900" />
           </IconButton>
         </div>
       </div>
+
+      {/* 필터링 모달 */}
     </section>
   );
 }
