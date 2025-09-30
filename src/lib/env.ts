@@ -13,6 +13,10 @@ const envSchema = z.object({
 
   // 서버 전용 환경변수 (필요시 주석 해제)
   DATABASE_URL: z.url(),
+
+  // 간이 로그인 환경변수
+  NEXT_PUBLIC_AUTH_USERNAME: z.string().default("admin"),
+  NEXT_PUBLIC_AUTH_PASSWORD: z.string().default("admin"),
   // API_SECRET_KEY: z.string().min(32),
   // GOOGLE_CLIENT_ID: z.string(),
   // GOOGLE_CLIENT_SECRET: z.string(),

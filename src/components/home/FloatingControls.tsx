@@ -1,9 +1,6 @@
 "use client";
 
-import { useState } from "react";
-
 import IconButton from "@/components/common/IconButton";
-import TestRegisterPlace from "@/components/home/TestRegisterPlace";
 import { CameraControlIcon, FilterIcon } from "@/components/icons";
 import { useMapStore } from "@/lib/stores/mapStore";
 import { cn } from "@/utils/ui";
@@ -16,7 +13,6 @@ export default function FloatingControls({
   className = "",
 }: FloatingControlsProps) {
   const { setCurrentLocation, updateMapCenter } = useMapStore();
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
   const handleCurrentLocationClick = () => {
     if (navigator.geolocation) {
@@ -60,20 +56,13 @@ export default function FloatingControls({
           </button>
         </div>
         <div className="h-full">
-          <IconButton
-            ariaLabel="장소 등록"
-            onClick={() => setIsRegisterModalOpen(true)}
-          >
+          <IconButton ariaLabel="필터링">
             <FilterIcon className="h-6 w-6 text-gray-900" />
           </IconButton>
         </div>
       </div>
 
-      {/* 장소 등록 모달 */}
-      <TestRegisterPlace
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-      />
+      {/* 필터링 모달 */}
     </section>
   );
 }
