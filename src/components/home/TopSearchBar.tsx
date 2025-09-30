@@ -31,7 +31,7 @@ export default function TopSearchBar({ className = "" }: TopSearchBarProps) {
           <button
             type="button"
             aria-label="exit"
-            className="pressable rounded-md bg-red-500 px-2 py-1 text-xs text-white transition-colors hover:bg-red-600"
+            className="pressable pointer-events-auto rounded-md bg-red-500 px-2 py-1 text-xs text-white transition-colors hover:bg-red-600"
             onClick={() => {
               // 쿠키 삭제
               document.cookie = "dalian_auth=; path=/; max-age=0";

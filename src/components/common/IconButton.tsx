@@ -27,6 +27,7 @@ export default function IconButton({
         "pressable",
         "rounded-lg",
         "bg-white/85 shadow-lg backdrop-blur-sm",
+        "pointer-events-auto",
         sizeClasses,
         className,
       ])}
