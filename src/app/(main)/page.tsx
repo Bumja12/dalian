@@ -1,7 +1,7 @@
-import GoogleMapComponent from "@/components/GoogleMapComponent";
 import BottomDrawer from "@/components/home/BottomDrawer";
 import FloatingControls from "@/components/home/FloatingControls";
 import TopSearchBar from "@/components/home/TopSearchBar";
+import GoogleMapWrapper from "@/components/map/GoogleMapWrapper";
 import { getPlaces } from "@/lib/db/queries/places";
 
 export default async function HomePage() {
@@ -10,7 +10,7 @@ export default async function HomePage() {
   return (
     <div className="relative min-h-screen">
       <div className="absolute inset-0">
-        <GoogleMapComponent places={places} />
+        <GoogleMapWrapper places={places} />
       </div>
       <TopSearchBar />
       <FloatingControls />

@@ -17,17 +17,6 @@ export default function BottomDrawer() {
   const [spacer, setSpacer] = useState("152px");
   const sheetRef = useRef<SheetRef>(null);
 
-  const sampleImages = [
-    {
-      src: "/sample/kaowe.jpeg",
-      alt: "카오위",
-    },
-    {
-      src: "/sample/guobaorou.jpeg",
-      alt: "꿔바로우",
-    },
-  ];
-
   const snapTo = (snap: number) => {
     sheetRef.current?.snapTo(snap);
   };
@@ -85,13 +74,17 @@ export default function BottomDrawer() {
                 name={selectedPlace?.name || ""}
                 address={selectedPlace?.address || ""}
                 rating={selectedPlace?.rating || 0}
-                representativeMenus={selectedPlace?.representativeMenus || []}
                 tags={selectedPlace?.tags || []}
                 category={selectedPlace?.category || ""}
               />
               {/* 사진 영역 */}
               <div className="h-40 px-6 pt-1 pb-3">
-                <ImageCarousel images={sampleImages} height={128} />
+                <ImageCarousel
+                  menus={selectedPlace?.menus}
+                  mainImage={selectedPlace?.image_url}
+                  images={selectedPlace?.images}
+                  height={128}
+                />
               </div>
             </div>
           </Sheet.Content>
