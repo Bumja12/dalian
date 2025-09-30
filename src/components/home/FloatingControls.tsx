@@ -35,7 +35,15 @@ export default function FloatingControls({
     }
   };
   return (
-    <section className={cn(["relative", "z-10", "px-3", className])}>
+    <section
+      className={cn([
+        "relative",
+        "z-10",
+        "px-3",
+        "pointer-events-none",
+        className,
+      ])}
+    >
       <div className="container flex h-[7vh] flex-row items-center justify-between gap-2">
         <div className="h-full">
           <IconButton
@@ -45,7 +53,7 @@ export default function FloatingControls({
             <CameraControlIcon className="h-6 w-6 text-gray-900" />
           </IconButton>
         </div>
-        <div className="flex h-full flex-col justify-end">
+        {/* <div className="flex h-full flex-col justify-end">
           <button
             type="button"
             onClick={() => {}}
@@ -54,7 +62,7 @@ export default function FloatingControls({
           >
             <span className="text-sm text-gray-900">현 위치로 검색</span>
           </button>
-        </div>
+        </div> */}
         <div className="h-full">
           <IconButton ariaLabel="필터링">
             <FilterIcon className="h-6 w-6 text-gray-900" />
