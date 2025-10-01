@@ -1,7 +1,9 @@
 "use client";
 
 import IconButton from "@/components/common/IconButton";
+import FilterModal from "@/components/home/FilterModal";
 import { CameraControlIcon, FilterIcon } from "@/components/icons";
+import { useFilterModalStore } from "@/lib/stores/filterModalStore";
 import { useMapStore } from "@/lib/stores/mapStore";
 import { cn } from "@/utils/ui";
 
@@ -13,6 +15,7 @@ export default function FloatingControls({
   className = "",
 }: FloatingControlsProps) {
   const { setCurrentLocation, updateMapCenter } = useMapStore();
+  const { openModal } = useFilterModalStore();
 
   const handleCurrentLocationClick = () => {
     if (navigator.geolocation) {
@@ -64,13 +67,14 @@ export default function FloatingControls({
           </button>
         </div> */}
         <div className="h-full">
-          <IconButton ariaLabel="필터링">
+          <IconButton ariaLabel="필터링" onClick={openModal}>
             <FilterIcon className="h-6 w-6 text-gray-900" />
           </IconButton>
         </div>
       </div>
 
       {/* 필터링 모달 */}
+      <FilterModal />
     </section>
   );
 }
