@@ -1,10 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import BottomDrawer from "@/components/home/BottomDrawer";
-import FloatingControls from "@/components/home/FloatingControls";
-import TopSearchBar from "@/components/home/TopSearchBar";
-import GoogleMapWrapper from "@/components/map/GoogleMapWrapper";
+import HomePageClient from "@/components/home/HomePageClient";
 import { getPlaces } from "@/lib/db/queries/places";
 
 export default async function HomePage() {
@@ -29,14 +26,5 @@ export default async function HomePage() {
   // 인증 성공 시 데이터 로드
   const places = await getPlaces();
 
-  return (
-    <div className="relative min-h-screen">
-      <div className="absolute inset-0">
-        <GoogleMapWrapper places={places} />
-      </div>
-      <TopSearchBar />
-      <FloatingControls />
-      <BottomDrawer />
-    </div>
-  );
+  return <HomePageClient initialPlaces={places} />;
 }

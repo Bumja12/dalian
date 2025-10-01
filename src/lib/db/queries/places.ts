@@ -61,6 +61,11 @@ interface TagQueryResult {
   name: string;
 }
 
+export interface Tag {
+  id: number;
+  name: string;
+}
+
 export const getPlaces = async (): Promise<Place[]> => {
   const places = await sql`
     SELECT
@@ -202,4 +207,169 @@ export const createPlace = async (
     console.error("장소 등록 중 오류 발생:", error);
     throw error;
   }
+};
+
+export const getTags = async (): Promise<Tag[]> => {
+  const tags = await sql`
+    SELECT id, name
+    FROM dalian.tags
+    ORDER BY name ASC
+  `;
+
+  return (tags as TagQueryResult[]).map(tag => ({
+    id: tag.id,
+    name: tag.name,
+  }));
+};
+
+export const getPlacesWithFilters = async (
+  categories?: string[],
+  tagIds?: number[]
+): Promise<Place[]> => {
+  // 필터가 없으면 전체 데이터 반환
+  if (
+    (!categories || categories.length === 0) &&
+    (!tagIds || tagIds.length === 0)
+  ) {
+    return getPlaces();
+  }
+
+  let query;
+
+  // 카테고리만 필터링
+  if (categories && categories.length > 0 && (!tagIds || tagIds.length === 0)) {
+    query = sql`
+      SELECT
+        p.id,
+        p.name,
+        p.address,
+        p.category,
+        p.lat,
+        p.lng,
+        p.rating,
+        p.image_url,
+        COALESCE((
+          SELECT ARRAY_AGG(JSON_BUILD_OBJECT('id', m.id, 'name', m.name, 'image_url', m.image_url))
+          FROM dalian.menus m
+          WHERE m.place_id = p.id
+        ), '{}') as menus,
+        COALESCE((
+          SELECT ARRAY_AGG(DISTINCT t.name)
+          FROM dalian.place_tags pt
+          JOIN dalian.tags t ON pt.tag_id = t.id
+          WHERE pt.place_id = p.id
+        ), '{}') as tags,
+        COALESCE((
+          SELECT ARRAY_AGG(pi.image_url)
+          FROM dalian.place_images pi
+          WHERE pi.place_id = p.id
+        ), '{}') as images
+      FROM dalian.places p
+      WHERE p.category = ANY(${categories})
+      ORDER BY p.created_at DESC
+    `;
+  }
+  // 태그만 필터링
+  else if (
+    tagIds &&
+    tagIds.length > 0 &&
+    (!categories || categories.length === 0)
+  ) {
+    query = sql`
+      SELECT
+        p.id,
+        p.name,
+        p.address,
+        p.category,
+        p.lat,
+        p.lng,
+        p.rating,
+        p.image_url,
+        COALESCE((
+          SELECT ARRAY_AGG(JSON_BUILD_OBJECT('id', m.id, 'name', m.name, 'image_url', m.image_url))
+          FROM dalian.menus m
+          WHERE m.place_id = p.id
+        ), '{}') as menus,
+        COALESCE((
+          SELECT ARRAY_AGG(DISTINCT t.name)
+          FROM dalian.place_tags pt
+          JOIN dalian.tags t ON pt.tag_id = t.id
+          WHERE pt.place_id = p.id
+        ), '{}') as tags,
+        COALESCE((
+          SELECT ARRAY_AGG(pi.image_url)
+          FROM dalian.place_images pi
+          WHERE pi.place_id = p.id
+        ), '{}') as images
+      FROM dalian.places p
+      WHERE EXISTS (
+        SELECT 1 FROM dalian.place_tags pt
+        WHERE pt.place_id = p.id AND pt.tag_id = ANY(${tagIds})
+      )
+      ORDER BY p.created_at DESC
+    `;
+  }
+  // 카테고리와 태그 모두 필터링
+  else {
+    query = sql`
+      SELECT
+        p.id,
+        p.name,
+        p.address,
+        p.category,
+        p.lat,
+        p.lng,
+        p.rating,
+        p.image_url,
+        COALESCE((
+          SELECT ARRAY_AGG(JSON_BUILD_OBJECT('id', m.id, 'name', m.name, 'image_url', m.image_url))
+          FROM dalian.menus m
+          WHERE m.place_id = p.id
+        ), '{}') as menus,
+        COALESCE((
+          SELECT ARRAY_AGG(DISTINCT t.name)
+          FROM dalian.place_tags pt
+          JOIN dalian.tags t ON pt.tag_id = t.id
+          WHERE pt.place_id = p.id
+        ), '{}') as tags,
+        COALESCE((
+          SELECT ARRAY_AGG(pi.image_url)
+          FROM dalian.place_images pi
+          WHERE pi.place_id = p.id
+        ), '{}') as images
+      FROM dalian.places p
+      WHERE p.category = ANY(${categories}) AND EXISTS (
+        SELECT 1 FROM dalian.place_tags pt
+        WHERE pt.place_id = p.id AND pt.tag_id = ANY(${tagIds})
+      )
+      ORDER BY p.created_at DESC
+    `;
+  }
+
+  const places = await query;
+
+  // PostgreSQL 배열을 JavaScript 배열로 변환
+  return (places as PlaceQueryResult[]).map(place => ({
+    id: place.id,
+    name: place.name,
+    address: place.address,
+    category: place.category,
+    lat: place.lat,
+    lng: place.lng,
+    rating: place.rating,
+    image_url: place.image_url,
+    menus: Array.isArray(place.menus)
+      ? (place.menus.filter(
+          (item: PlaceMenu | null) => item !== null
+        ) as PlaceMenu[])
+      : [],
+    tags: Array.isArray(place.tags)
+      ? (place.tags.filter((item: string | null) => item !== null) as string[])
+      : [],
+    images: Array.isArray(place.images)
+      ? (place.images.filter(
+          (item: string | null) => item !== null
+        ) as string[])
+      : [],
+  })) as Place[];
 };

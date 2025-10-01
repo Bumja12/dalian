@@ -5,7 +5,10 @@ import { revalidatePath } from "next/cache";
 import {
   createPlace,
   getPlaces,
+  getPlacesWithFilters,
+  getTags,
   type PlaceRegistrationData,
+  type Tag,
 } from "@/lib/db/queries/places";
 
 export async function createPlaceAction(formData: FormData) {
@@ -68,9 +71,9 @@ export async function createPlaceAction(formData: FormData) {
       lng,
     };
 
-    console.log("장소 등록 데이터:", registrationData);
+    console.warn("장소 등록 데이터:", registrationData);
     const placeId = await createPlace(registrationData);
-    console.log("생성된 placeId:", placeId);
+    console.warn("생성된 placeId:", placeId);
 
     // 생성된 데이터 확인 (디버그용)
     const { sql } = await import("@/lib/db");
@@ -81,9 +84,9 @@ export async function createPlaceAction(formData: FormData) {
     const tags_result =
       await sql`SELECT t.name FROM dalian.tags t JOIN dalian.place_tags pt ON t.id = pt.tag_id WHERE pt.place_id = ${placeId}`;
 
-    console.log("저장된 메뉴:", menus);
-    console.log("저장된 이미지:", images_result);
-    console.log("저장된 태그:", tags_result);
+    console.warn("저장된 메뉴:", menus);
+    console.warn("저장된 이미지:", images_result);
+    console.warn("저장된 태그:", tags_result);
 
     // 캐시 무효화 (장소 목록이 변경되었으므로)
     revalidatePath("/");
@@ -113,5 +116,26 @@ export async function getPlacesAction() {
   } catch (error) {
     console.error("장소 조회 오류:", error);
     throw new Error("장소 조회에 실패했습니다.");
+  }
+}
+
+export async function getTagsAction(): Promise<Tag[]> {
+  try {
+    return await getTags();
+  } catch (error) {
+    console.error("태그 조회 오류:", error);
+    throw new Error("태그 조회에 실패했습니다.");
+  }
+}
+
+export async function getPlacesWithFiltersAction(
+  categories?: string[],
+  tagIds?: number[]
+) {
+  try {
+    return await getPlacesWithFilters(categories, tagIds);
+  } catch (error) {
+    console.error("필터링된 장소 조회 오류:", error);
+    throw new Error("필터링된 장소 조회에 실패했습니다.");
   }
 }
