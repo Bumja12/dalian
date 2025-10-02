@@ -15,10 +15,10 @@ export default function CopyButton({ copyText }: CopyButtonProps) {
     <div className="flex h-6 w-8 items-center justify-center">
       <button
         type="button"
-        className="pressable h-full w-full p-0"
+        className="flex h-full w-full items-center justify-center rounded-md p-0 transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         onClick={handleCopy}
       >
-        <CopyIcon className="h-5 w-5" />
+        <CopyIcon className="h-5 w-5" style={{ color: "#374151" }} />
       </button>
     </div>
   );
