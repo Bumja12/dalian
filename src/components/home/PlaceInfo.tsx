@@ -41,11 +41,24 @@ export default function PlaceInfo({
           <CopyButton copyText={address} />
         </div>
       </div>
-      <div className="flex flex-row items-center justify-start gap-1.5 px-6">
-        {category && <PlaceTag name={category} type="category" />}
-        {tags.map(tag => (
-          <PlaceTag key={tag} name={tag} type="tag" />
-        ))}
+      <div className="px-6">
+        <div className="scrollbar-hide flex flex-row items-center gap-1.5 overflow-x-auto">
+          {category && (
+            <PlaceTag
+              name={category}
+              type="category"
+              className="flex-shrink-0"
+            />
+          )}
+          {tags.map(tag => (
+            <PlaceTag
+              key={tag}
+              name={tag}
+              type="tag"
+              className="flex-shrink-0"
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

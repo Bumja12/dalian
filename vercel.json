@@ -9,5 +9,16 @@
   },
   "buildCommand": "npm run build",
   "installCommand": "npm ci",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Link",
+          "value": "</_next/static/css/>; rel=preload; as=style"
+        }
+      ]
+    }
+  ]
 }
