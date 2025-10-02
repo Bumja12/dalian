@@ -91,7 +91,7 @@ export default function BottomDrawer() {
           setSnapIndex(index);
         }}
       >
-        <Sheet.Container>
+        <Sheet.Container style={{ background: "#ffffff", color: "#171717" }}>
           {/* <BottomActionBar /> */}
           <Sheet.Content disableDrag>
             <div className="h-72 w-full">
