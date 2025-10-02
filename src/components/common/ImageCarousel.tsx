@@ -15,6 +15,7 @@ type ImageCarouselProps = {
   images?: string[];
   options?: EmblaOptionsType;
   height?: number;
+  onImageClick?: (index: number) => void;
 };
 
 export default function ImageCarousel({
@@ -23,6 +24,7 @@ export default function ImageCarousel({
   images = [],
   options,
   height = 160,
+  onImageClick,
 }: ImageCarouselProps) {
   const [emblaRef] = useEmblaCarousel({
     ...options,
@@ -66,7 +68,7 @@ export default function ImageCarousel({
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex gap-2">
           {imageList.length > 0 &&
-            imageList.map(image => {
+            imageList.map((image, index) => {
               const imageDim = imageDimensions[image.image_url];
               const aspectRatio = imageDim
                 ? imageDim.width / imageDim.height
@@ -83,11 +85,12 @@ export default function ImageCarousel({
               return (
                 <div
                   key={image.id}
-                  className="relative flex-none overflow-hidden rounded-lg bg-gray-100"
+                  className={`relative flex-none overflow-hidden rounded-lg bg-gray-100 ${onImageClick ? "cursor-pointer" : ""}`}
                   style={{
                     width: `${constrainedWidth}px`,
                     height: `${height}px`,
                   }}
+                  onClick={() => onImageClick?.(index)}
                 >
                   <Image
                     src={image.image_url}
