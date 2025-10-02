@@ -17,6 +17,9 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  // 폰트 최적화 활성화
+  optimizeFonts: true,
+
   webpack: config => {
     // Ensure TS paths aliases also work in non-TS files or runtime webpack resolution
     config.resolve.alias = {
