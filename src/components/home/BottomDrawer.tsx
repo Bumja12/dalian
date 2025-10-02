@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Sheet, type SheetRef } from "react-modal-sheet";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 
 import ImageCarousel from "@/components/common/ImageCarousel";
 import PlaceInfo from "@/components/home/PlaceInfo";
@@ -17,9 +19,37 @@ export default function BottomDrawer() {
   const [spacer, setSpacer] = useState("152px");
   const sheetRef = useRef<SheetRef>(null);
 
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
   const snapTo = (snap: number) => {
     sheetRef.current?.snapTo(snap);
   };
+
+  const handleImageClick = (index: number) => {
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const lightboxSlides = useMemo(() => {
+    const mainImageData = selectedPlace?.image_url
+      ? [{ src: selectedPlace.image_url, alt: "메인 이미지" }]
+      : [];
+
+    const menuImages =
+      selectedPlace?.menus?.map(menu => ({
+        src: menu.image_url,
+        alt: menu.name,
+      })) || [];
+
+    const additionalImages =
+      selectedPlace?.images?.map((image, index) => ({
+        src: image,
+        alt: `이미지 ${index + 1}`,
+      })) || [];
+
+    return [...mainImageData, ...menuImages, ...additionalImages];
+  }, [selectedPlace]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -84,12 +114,20 @@ export default function BottomDrawer() {
                   mainImage={selectedPlace?.image_url}
                   images={selectedPlace?.images}
                   height={128}
+                  onImageClick={handleImageClick}
                 />
               </div>
             </div>
           </Sheet.Content>
         </Sheet.Container>
       </Sheet>
+
+      <Lightbox
+        open={lightboxOpen}
+        close={() => setLightboxOpen(false)}
+        index={lightboxIndex}
+        slides={lightboxSlides}
+      />
     </>
   );
 }
